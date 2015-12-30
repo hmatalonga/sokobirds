@@ -27,6 +27,10 @@
 *.i*86
 *.x86_64
 *.hex
+sokobirds
 
 # Debug files
 *.dSYM/
+
+# Assets directories
+assets/

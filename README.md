@@ -1,2 +1,2 @@
 # sokobirds
-Simple sokoban game clone
+Simple sokoban game clone. Implemented in SDL2
