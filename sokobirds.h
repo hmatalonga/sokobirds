@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_opengl.h>
@@ -9,6 +10,9 @@
 #define DATA_FILE "data.bin"
 #define DISPLAY_WIDTH 800
 #define DISPLAY_HEIGHT 480
+#ifndef PI
+#define PI (3.141592653589793)
+#endif
 
 #define WORLD_MAX_WIDTH 32 //Tamanho max da largura da matrix
 #define WORLD_MAX_HEIGHT 32 //Tamanho max da altura da matrix
@@ -42,15 +46,42 @@ typedef struct Viewport {
     int fullscreen; //Var controlo de Viewport Ecran Inteiro
 } Viewport;
 
+typedef struct Scene {
+    GLfloat x; // X eixo de deslocção de posicionamento da Cena -DISPLAY_WIDTH/100
+    GLfloat y; // Y eixo de deslocção de posicionamento da Cena DISPLAY_HEIGHT/100
+    GLfloat z; //profundidade do ecran. -35.0f
+    GLfloat visionAngle; //ângulo de rotação -45º
+    GLfloat xrot; //x rotation 0
+    GLfloat yrot; //y rotation 0
+    GLfloat zrot; //z rotation 0
+    GLfloat xspeed; //x rotation speed
+    GLfloat yspeed; //y rotation speed
+} Scene;
+
+typedef struct Camera { // 45. 0.1, 100
+    GLdouble fovy; //ângulo de visão de perspectiva
+    GLdouble zNear; //Ponto de proximidade da camera
+    GLdouble zFar; //Distância de visão da camera
+} Camera;
+
+typedef struct Light {
+    GLfloat diffuse[4]; // {1.0f, 1.0f, 1.0f, 1.0f}
+    GLfloat ambient[4]; // {0.5f, 0.5f, 0.5f, 1.0f}
+    GLfloat position[4]; // {0.0f, 0.0f, 2.0f, 1.0f}
+} Light;
+
 // Functions definitions
 // helper.c
-int init(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view);
-int initGL();
+int initSDL(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view);
+int initGL(Viewport view, Scene scene, Camera camera, Light light);
 Game initGame(Game game);
+void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 char **loadMap(char **map, int *pos_x, int *pos_y, int *score, char *fname);
 void listMap(char **map);
-void playMusic(char *soundFile);
+void playMusic(Mix_Music **music, char *soundFile);
 void playSound(char *soundFile);
-void close(SDL_Window **gWindow);
+void closeSDL(SDL_Window **gWindow, Mix_Music **music);
 // draw.c
-void render();
+void renderGame(Game game);
+void drawMainMenu();
+void drawSkyBox();

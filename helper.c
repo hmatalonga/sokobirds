@@ -1,6 +1,6 @@
 #include "sokobirds.h"
 
-int init(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view) {
+int initSDL(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view) {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -26,42 +26,70 @@ int init(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view) {
     //Use Vsync
     if( SDL_GL_SetSwapInterval( 1 ) < 0 )
         printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
-    //Initialize OpenGL
-    if(!initGL()) {
+    return 1;
+}
+
+int initGL(Viewport view, Scene scene, Camera camera, Light light) {
+    //Initialize clear color
+    glClearColor( 0.f, 0.f, 0.f, 1.f );
+    if(glGetError() != GL_NO_ERROR ) {
+        printf( "Unable to initialize OpenGL!\n" );
+        return 0;
+    }
+    glClearDepth(1.0); // Enables Clearing Of The Depth Buffer
+
+    /* The Type Of Depth Test To Do
+     * specify the value used for depth buffer comparisons
+     * GL_LESS Passes if the incoming depth value is less than the stored depth value */
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST); // Enables Depth Testing
+    if(glGetError() != GL_NO_ERROR ) {
+        printf( "Unable to initialize OpenGL!\n" );
+        return 0;
+    }
+
+    //Coloração de Gouraud: interpola as cores entre os vértices (coloração por defeito)
+    glShadeModel(GL_SMOOTH); // Enables Smooth Color Shading
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity(); // Reset The Projection Matrix
+    perspectiveGL(camera.fovy, (GLfloat) view.width / (GLfloat) view.height, camera.zNear, camera.zFar); // Calculate The Aspect Ratio Of The Window
+    //gluPerspective(camera.fovy, (GLfloat) view.width / (GLfloat) view.height, camera.zNear, camera.zFar); // Calculate The Aspect Ratio Of The Window
+    if(glGetError() != GL_NO_ERROR ) {
+        printf( "Unable to initialize OpenGL!\n" );
+        return 0;
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    // set up light number 1.
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light.ambient); // add lighting. (ambient)
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light.diffuse); // add lighting. (diffuse).
+    glLightfv(GL_LIGHT1, GL_POSITION, light.position); // set light position.
+    glEnable(GL_LIGHT1); // turn light 1 on.
+    if(glGetError() != GL_NO_ERROR ) {
         printf( "Unable to initialize OpenGL!\n" );
         return 0;
     }
     return 1;
 }
 
-int initGL() {
-    GLenum error = GL_NO_ERROR;
-    //Initialize Projection Matrix
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    //Check for error
-    error = glGetError();
-    if( error != GL_NO_ERROR )
-        return 0;
-    //Initialize Modelview Matrix
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    //Check for error
-    error = glGetError();
-    if( error != GL_NO_ERROR )
-        return 0;
-    //Initialize clear color
-    glClearColor( 0.f, 0.f, 0.f, 1.f );
-    //Check for error
-    error = glGetError();
-    if( error != GL_NO_ERROR )
-        return 0;
-    return 1;
-}
-
 Game initGame(Game game) {
     game.Map = loadMap(game.Map, &game.pos_x, &game.pos_y, &game.Score, "levels/level1.txt");
     return game;
+}
+
+void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar ) {
+    // Replaces gluPerspective. Sets the frustum to perspective mode.
+    // fovY     - Field of vision in degrees in the y direction
+    // aspect   - Aspect ratio of the viewport
+    // zNear    - The near clipping distance
+    // zFar     - The far clipping distance
+    // http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
+    GLdouble fW, fH;
+    fH = tan(fovY / 360 * PI) * zNear;
+    fW = fH * aspect;
+
+    glFrustum( -fW, fW, -fH, fH, zNear, zFar );
 }
 
 char **loadMap(char **map, int *pos_x, int *pos_y, int *score, char *fname) {
@@ -115,24 +143,21 @@ void listMap(char **map) {
     }
 }
 
-void playMusic(char *soundFile) {
+void playMusic(Mix_Music **music, char *soundFile) {
     if (MIX_INIT_OGG != (Mix_Init(MIX_INIT_OGG))) {
         printf("Mix_Init: %s\n", Mix_GetError());
-        exit(1);
+        return;
     }
 
     Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640);
-    Mix_Music *music = Mix_LoadMUS(soundFile);
-    Mix_PlayMusic(music, -1);
-
-    while (!SDL_QuitRequested())
-        SDL_Delay(250);
-
-    Mix_FreeMusic(music);
+    *music = Mix_LoadMUS(soundFile);
+    Mix_PlayMusic(*music, -1);
 }
 
-void close(SDL_Window **gWindow) {
+void closeSDL(SDL_Window **gWindow, Mix_Music **music) {
     SDL_DestroyWindow(*gWindow);
     *gWindow = NULL;
+    Mix_FreeMusic(*music);
+    *music = NULL;
     SDL_Quit();
 }
