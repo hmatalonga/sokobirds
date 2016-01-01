@@ -32,7 +32,7 @@ sokobirds
 # Debug files
 *.dSYM/
 
-# Asset directories
+# Assets directories
 assets/
 
 # Netbeans directory

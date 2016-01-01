@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
 
 #define APP_NAME "Sokobirds"
@@ -24,6 +26,21 @@
 #define CHOLE '.' //Char para Buraco
 #define CDONE 'D' //Char para Objectivo
 #define CEMPTY 'N' //Char para Vazio
+
+#define TEXTURE_PLAYER_FRONT 0 //Textura da Face do Jogador
+#define TEXTURE_PLAYER_OTHER 1 //Textura do Corpo do Jogador
+#define TEXTURE_BOX 2 //Textura da Caixa
+#define TEXTURE_FLOOR 3 //Textura do Chão
+#define TEXTURE_WALL 4 //Textura da Parede
+#define TEXTURE_HOLE 5 //Textura do Buraco
+#define TEXTURE_SKYBOX_TOP 6
+#define TEXTURE_SKYBOX_BOTTOM 7
+#define TEXTURE_SKYBOX_SIDE 8
+#define TEXTURE_MAINMENU 9
+#define NUM_TEXTURES 10
+
+#define SOUND_LOOP -1 //Música em reprodução em loop
+#define SOUND_NO_LOOP 0 //Música reprodução uma vez apenas
 
 typedef struct Game {
     int MenuOpened; //Var controlo de menu (visivel)
@@ -78,10 +95,19 @@ Game initGame(Game game);
 void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 char **loadMap(char **map, int *pos_x, int *pos_y, int *score, char *fname);
 void listMap(char **map);
+int loadGLTexture(GLuint *textureContent, int textureID, char *textureFile);
 void playMusic(Mix_Music **music, char *soundFile);
 void playSound(char *soundFile);
 void closeSDL(SDL_Window **gWindow, Mix_Music **music);
 // draw.c
-void renderGame(Game game);
-void drawMainMenu();
-void drawSkyBox();
+void renderGame(Game game, Scene scene, GLuint *textureContent);
+void drawMainMenu(GLuint *textureContent);
+void drawSkyBox(GLuint *textureContent);
+void drawScene(Game game, Scene scene, GLuint *textureContent);
+void drawObject(GLuint *textureContent, char *objName);
+
+// glulookat deprecated!!!
+void GLAPIENTRY gluLookAt(GLdouble eyex, GLdouble eyey, GLdouble eyez,
+      GLdouble centerx, GLdouble centery, GLdouble centerz,
+      GLdouble upx, GLdouble upy, GLdouble upz);
+// -----------------------

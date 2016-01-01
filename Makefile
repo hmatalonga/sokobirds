@@ -1,7 +1,7 @@
 OBJS=main.c draw.c helper.c
 CC=gcc
 COMPILER_FLAGS=-Wall -Werror
-LINKER_FLAGS=-lm -lSDL2 -lSDL2_mixer -lGL
+LINKER_FLAGS=-lm -lSDL2 -lSDL2_mixer -lSDL2_image -lGL
 DEPS=sokobirds.h
 OBJ_NAME=sokobirds
 

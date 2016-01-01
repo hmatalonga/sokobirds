@@ -3,8 +3,8 @@
 int main(int argc, char const *argv[])
 {
     SDL_Window *gWindow = NULL;
-    //SDL_Renderer *gRenderer = NULL;
     SDL_GLContext gContext;
+    GLuint textureContent[NUM_TEXTURES];
     Mix_Music *music = NULL;
     SDL_Event e;
     Scene scene = {
@@ -25,14 +25,38 @@ int main(int argc, char const *argv[])
     initSDL(&gWindow, &gContext, viewport);
     initGL(viewport, scene, camera, sun);
     game = initGame(game);
+
+    loadGLTexture(textureContent, TEXTURE_MAINMENU, "assets/Textures/intro.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_TOP, "assets/Textures/top.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_BOTTOM, "assets/Textures/bottom.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_SIDE, "assets/Textures/side.jpg");
+    loadGLTexture(textureContent, TEXTURE_PLAYER_FRONT, "assets/Textures/front_face.jpg");
+    loadGLTexture(textureContent, TEXTURE_PLAYER_OTHER, "assets/Textures/other_face.jpg");
+    loadGLTexture(textureContent, TEXTURE_BOX, "assets/Textures/crate.jpg");
+    loadGLTexture(textureContent, TEXTURE_WALL, "assets/Textures/wall.jpg");
+    loadGLTexture(textureContent, TEXTURE_FLOOR, "assets/Textures/grass.jpg");
+    loadGLTexture(textureContent, TEXTURE_HOLE, "assets/Textures/hole.jpg");
+
     playMusic(&music, "assets/Sounds/NightOwl.ogg");
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0)
             if (e.type == SDL_QUIT)
                 quit = 1;
+            else if (e.type == SDL_KEYDOWN) {
+                switch (e.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        quit = 1;
+                        break;
+                    case SDLK_SPACE:
+                        game.MenuOpened = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-        renderGame(game);
+        renderGame(game, scene, textureContent);
         //Update screen
         SDL_GL_SwapWindow(gWindow);
     }
