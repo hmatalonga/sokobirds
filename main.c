@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
     SDL_Event e;
     Scene scene = {
         -DISPLAY_WIDTH/100, DISPLAY_HEIGHT/100,
-        -35.0f, 45.0f,
+        -30.0f, 45.0f,
         0, 0, 0, 0, 0
     };
     Camera camera = {45.0f, 0.1f, 100.0f};
@@ -27,9 +27,9 @@ int main(int argc, char const *argv[])
     game = initGame(game);
 
     loadGLTexture(textureContent, TEXTURE_MAINMENU, "assets/Textures/intro.jpg");
-    loadGLTexture(textureContent, TEXTURE_SKYBOX_TOP, "assets/Textures/top.jpg");
-    loadGLTexture(textureContent, TEXTURE_SKYBOX_BOTTOM, "assets/Textures/bottom.jpg");
-    loadGLTexture(textureContent, TEXTURE_SKYBOX_SIDE, "assets/Textures/side.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_TOP, "assets/Textures/top2.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_BOTTOM, "assets/Textures/bottom2.jpg");
+    loadGLTexture(textureContent, TEXTURE_SKYBOX_SIDE, "assets/Textures/side2.jpg");
     loadGLTexture(textureContent, TEXTURE_PLAYER_FRONT, "assets/Textures/front_face.jpg");
     loadGLTexture(textureContent, TEXTURE_PLAYER_OTHER, "assets/Textures/other_face.jpg");
     loadGLTexture(textureContent, TEXTURE_BOX, "assets/Textures/crate.jpg");
@@ -50,6 +50,18 @@ int main(int argc, char const *argv[])
                         break;
                     case SDLK_SPACE:
                         game.MenuOpened = 0;
+                        break;
+                    case SDLK_UP:
+                        game.Map = playerMove(game.Map, &game.pos_x, &game.pos_y, &game.LastStep, &game.CheckPoint, &game.Score, 'w');
+                        break;
+                    case SDLK_LEFT:
+                        game.Map = playerMove(game.Map, &game.pos_x, &game.pos_y, &game.LastStep, &game.CheckPoint, &game.Score, 'a');
+                        break;
+                    case SDLK_DOWN:
+                        game.Map = playerMove(game.Map, &game.pos_x, &game.pos_y, &game.LastStep, &game.CheckPoint, &game.Score, 's');
+                        break;
+                    case SDLK_RIGHT:
+                        game.Map = playerMove(game.Map, &game.pos_x, &game.pos_y, &game.LastStep, &game.CheckPoint, &game.Score, 'd');
                         break;
                     default:
                         break;

@@ -160,8 +160,8 @@ void drawScene(Game game, Scene scene, GLuint *textureContent) {
     glTranslatef(scene.x, scene.y, scene.z); // move z units out from the screen. e coordenadas(0, 0)
 
     //Muda camera da Cena
-    glTranslatef(-8.0f, 8.0f, -2.0f); //Centra plataforma do Jogo
-    glRotatef(15.0f, 1.0f, 0.0f, 0.0f); // Rotate On The X Axis
+    glTranslatef(-14.0f, 8.0f, -4.0f); //Centra plataforma do Jogo
+    glRotatef(-15.0f, 1.0f, 0.0f, 0.0f); // Rotate On The X Axis
 
     int i = 0, j = 0, valid = 0, ct = 0, lt = 0;
 

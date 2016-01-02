@@ -105,6 +105,8 @@ void drawMainMenu(GLuint *textureContent);
 void drawSkyBox(GLuint *textureContent);
 void drawScene(Game game, Scene scene, GLuint *textureContent);
 void drawObject(GLuint *textureContent, char *objName);
+// logic.c
+char **playerMove(char **Map, int *pos_x, int *pos_y, char *lastStep, int *CheckPoint, int *score, char dir);
 
 // glulookat deprecated!!!
 void GLAPIENTRY gluLookAt(GLdouble eyex, GLdouble eyey, GLdouble eyez,

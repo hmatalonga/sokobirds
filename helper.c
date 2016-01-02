@@ -6,6 +6,12 @@ int initSDL(SDL_Window **gWindow, SDL_GLContext *gContext, Viewport view) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 0;
     }
+    // Initialize SDL Mixer
+    if (MIX_INIT_OGG != (Mix_Init(MIX_INIT_OGG))) {
+        printf("Mix_Init: %s\n", Mix_GetError());
+        return 0;
+    }
+    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
     //Use OpenGL 3.1
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -94,7 +100,9 @@ void perspectiveGL( GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFa
     fH = tan(fovY / 360 * PI) * zNear;
     fW = fH * aspect;
 
-    glFrustum( -fW, fW, -fH, fH, zNear, zFar );
+    float distance = 1.2f;
+
+    glFrustum( -fW * distance, fW * distance, -fH * distance, fH * distance, zNear, zFar );
 }
 
 char **loadMap(char **map, int *pos_x, int *pos_y, int *score, char *fname) {
@@ -149,14 +157,16 @@ void listMap(char **map) {
 }
 
 void playMusic(Mix_Music **music, char *soundFile) {
-    if (MIX_INIT_OGG != (Mix_Init(MIX_INIT_OGG))) {
-        printf("Mix_Init: %s\n", Mix_GetError());
-        return;
-    }
-
-    Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640);
     *music = Mix_LoadMUS(soundFile);
-    Mix_PlayMusic(*music, -1);
+    Mix_PlayMusic(*music, SOUND_LOOP);
+}
+
+void playSound(char *soundFile) {
+    Mix_Chunk *sound = NULL;
+    sound = Mix_LoadWAV(soundFile);
+    Mix_PlayChannel(-1, sound, SOUND_NO_LOOP);
+    Mix_FreeChunk(sound);
+    sound = NULL;
 }
 
 int loadGLTexture(GLuint *textureContent, int textureID, char *textureFile) {
@@ -190,6 +200,7 @@ void closeSDL(SDL_Window **gWindow, Mix_Music **music) {
     *gWindow = NULL;
     Mix_FreeMusic(*music);
     *music = NULL;
+    Mix_CloseAudio();
     SDL_Quit();
 }
 

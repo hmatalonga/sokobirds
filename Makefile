@@ -1,4 +1,4 @@
-OBJS=main.c draw.c helper.c
+OBJS=main.c draw.c logic.c helper.c
 CC=gcc
 COMPILER_FLAGS=-Wall -Werror
 LINKER_FLAGS=-lm -lSDL2 -lSDL2_mixer -lSDL2_image -lGL
