@@ -41,7 +41,7 @@ int initGL(Viewport view, Scene scene, Camera camera, Light light) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // White background color
     glClearDepth(1.0); // Enables Clearing Of The Depth Buffer
     if(glGetError() != GL_NO_ERROR ) {
-        printf( "Unable to initialize OpenGL!\n" );
+        printf( "Unable to initialize OpenGL! 1\n" );
         return 0;
     }
 
@@ -51,10 +51,9 @@ int initGL(Viewport view, Scene scene, Camera camera, Light light) {
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST); // Enables Depth Testing
     if(glGetError() != GL_NO_ERROR ) {
-        printf( "Unable to initialize OpenGL!\n" );
+        printf( "Unable to initialize OpenGL! 2\n" );
         return 0;
     }
-
     // Coloração de Gouraud: interpola as cores entre os vértices (coloração por defeito)
     glShadeModel(GL_SMOOTH); // Enables Smooth Color Shading
 
@@ -64,7 +63,7 @@ int initGL(Viewport view, Scene scene, Camera camera, Light light) {
     // Calculate The Aspect Ratio Of The Window
     perspectiveGL(camera.fovy, (GLfloat) view.width / (GLfloat) view.height, camera.zNear, camera.zFar);
     if(glGetError() != GL_NO_ERROR ) {
-        printf( "Unable to initialize OpenGL!\n" );
+        printf( "Unable to initialize OpenGL! 3\n" );
         return 0;
     }
 
@@ -78,14 +77,14 @@ int initGL(Viewport view, Scene scene, Camera camera, Light light) {
     glLightfv(GL_LIGHT1, GL_POSITION, light.position); // set light position.
     glEnable(GL_LIGHT1); // turn light 1 on.
     if(glGetError() != GL_NO_ERROR ) {
-        printf( "Unable to initialize OpenGL!\n" );
+        printf( "Unable to initialize OpenGL! 4\n" );
         return 0;
     }
     return 1;
 }
 
 Game initGame(Game game) {
-    game.Map = loadMap(game.Map, &game.pos_x, &game.pos_y, &game.Score, "levels/level1.txt");
+    game.Map = loadMap(game.Map, &game.pos_x, &game.pos_y, &game.Score, "levels/level4.txt");
     return game;
 }
 

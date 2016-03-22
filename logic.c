@@ -282,3 +282,9 @@ char **playerMove(char **Map, int *pos_x, int *pos_y, char *lastStep, int *Check
     }
     return Map;
 }
+
+void updateGame(Game *game) {
+    if (game->Score == 0)
+        game->Level++;
+    game->Score = 5;
+}

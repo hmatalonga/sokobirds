@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
                         break;
                 }
             }
-
+        updateGame(&game);
         renderGame(game, scene, textureContent);
         //Update screen
         SDL_GL_SwapWindow(gWindow);
