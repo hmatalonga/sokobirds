@@ -3,5 +3,5 @@ before_install:
   - sudo apt-get -qq update
   - curl -O http://libsdl.org/release/SDL2-2.0.4.tar.gz
   - tar -xzvf SDL2-2.0.4.tar.gz
-install:cd SDL2-2.0.4 && ./configure && make && sudo make install
+install: cd SDL2-2.0.4 && ./configure && make && sudo make install
 script: make sokobirds
